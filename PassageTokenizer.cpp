@@ -1,89 +1,79 @@
 #include "PassageTokenizer.h"
-PassageTokenizer::PassageTokenizer(string C)
-{
-    Passage = C;
-}
-PartToken PassageTokenizer::nextPart()
-{
-    
-    char type;                          
-    int ch=0;                       //keeps track of the index for the last character read.
-    type = Passage[0];              
-    if(type == '(')
-    {
-        ch = Passage.find_first_of(')')+1;
-        Part = Passage.substr(0, ch);
-    }
-    else if (type == '[')
-    {
-        
-        int Brackets =1;                    
-        int i=1;
-        for(i; i < Passage.length() && Brackets !=0; i++)
-        {
-            if(Passage[i]== '[')                        //keeps track of the number of opening brackets.
-                Brackets++;
-            else if(Passage[i]== ']')                   //keeps track of the closing brakcets.
-                Brackets--;            
-            
-        }
-        ch = i;
-        Part = Passage.substr(0, ch);
-    }
-    else 
-    {
-        if(Passage.find('(') != string::npos)                //checks that there're no opening parenthesis.
-        {
-            ch = Passage.find_first_of('(');
-            Part = Passage.substr(0, ch);
-        }
-        else if (Passage.find('[') != string::npos)          //checks that there're no opening brackets.
-        {  
-            ch = Passage.find_first_of('[');
-            Part = Passage.substr(0, ch);
-        }
-        else                                                //if there're no opening brackets it'll read until it reaches the end of the string.
-        {
-            Part = Passage;
-            ch = Passage.length();
-        }
-    }
-    string temp = Passage.substr(ch);
-    Passage= temp;                                     //temp value to change the Passage string.
-    PartToken TokenPart(Part);
-    return TokenPart;
+
+#include <cstring>
+
+using namespace std;
+
+PassageTokenizer::PassageTokenizer(string data) {
+	this->data = data;
 }
 
-bool PassageTokenizer::hasNextPart()
-{
-    if (Passage.empty())
-        return false;
-    else 
-    return true;
+bool PassageTokenizer::hasNextPart() {
+	return ready;
 }
 
-PartToken::PartToken(string C)
-{
-    string Initial_Char = C.substr(0, 2);                      //tracks the first 2 characters from the string
-    text = C;
-    if (text.at(0) == '[')                                      
-    {
-        if (text.at(1) == '[' && C.at(2)!= '[')
-            TokenType = LINK;
-        else TokenType = BLOCK;
-    }
-    else if (Initial_Char == "(g") 
-        TokenType= GOTO;
-    else if (Initial_Char == "(s")
-        TokenType = SET;
-    else if (Initial_Char == "(i")
-        TokenType = IF;
-    else if (Initial_Char == "(e")
-    {
-        if (text.find("else-if") != string::npos)                  //checks for string "else-if".
-            TokenType = ELSEIF;
-        else TokenType = ELSE;
-    }
-    else TokenType = TEXT;
+PartToken PassageTokenizer::nextPart() {
+	int read[] = { -1, -1 };
+	walkData(read);
+	PartToken token(data.substr(readIdx, 1 + read[0] - readIdx),
+			(part_t) read[1]);
+	readIdx = read[0] + 1;
+	if (readIdx >= data.size())
+		ready = false;
+	return token;
 }
 
+/**
+ * Returns two things: The part_t type of the next token found, and the readIdx of the end of this token for when it is consumed.
+ * This method does not increment the readIdx of the tokenizer.
+ */
+void PassageTokenizer::walkData(int* ret) {
+	char c = data[readIdx];
+	if (c == '[') {
+		if (data[readIdx + 1] == '[') {
+			ret[0] = data.find("]]", readIdx) + 1;
+			ret[1] = LINK;
+			return;
+		} else {
+			ret[1] = BLOCK;
+			int brackets = 0;
+			for (size_t i = readIdx + 1; i < data.size(); i++) {
+				if (data[i] == '[') {
+					brackets++;
+				}
+				if (data[i] == ']') {
+					if (brackets == 0) {
+						ret[0] = i;
+						break;
+					} else
+						brackets--;
+				}
+			}
+			return;
+		}
+	}
+	if (c == '(') {
+		int colon = data.find(':', readIdx);
+		const char* cmd = data.substr(readIdx + 1, colon - readIdx - 1).c_str();
+		if (strcmp(cmd, "go-to") == 0)
+			ret[1] = GOTO;
+		else if (strcmp(cmd, "set") == 0)
+			ret[1] = SET;
+		else if (strcmp(cmd, "if") == 0)
+			ret[1] = IF;
+		else if (strcmp(cmd, "else-if") == 0)
+			ret[1] = ELSEIF;
+		else if (strcmp(cmd, "else") == 0)
+			ret[1] = ELSE;
+		ret[0] = data.find(')', colon);
+		return;
+	} else {
+		ret[1] = TEXT;
+		for (size_t i = readIdx; i < data.size() + 1; i++) {
+			if (data[i] == '[' || data[i] == '(' || data[i] == '\0') {
+				ret[0] = i - 1;
+				break;
+			}
+		}
+	}
+}

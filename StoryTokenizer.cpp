@@ -1,47 +1,30 @@
 #include "StoryTokenizer.h"
-#include <string>
 
-StoryTokenizer::StoryTokenizer(string C)
-{
-    int Startofbody = C.find("<tw-passagedata ");   //
-    Story = C.substr(Startofbody);
-    header= "</tw-passagedata>";
+using namespace std;
+
+const string NAME = "name=\"";
+const string START = "<tw-passagedata";
+const string END = "</tw-passagedata>";
+
+StoryTokenizer::StoryTokenizer(string story) {
+	this->story = story;
+	this->readIdx = story.find("<body>", 0);
 }
 
-bool StoryTokenizer::hasNextPassage()
-{
-    bool HasNextPassage;
-    if(Story.find(header) != string::npos)
-        return true;
-    else 
-        return false;
+bool StoryTokenizer::hasNextPassage() {
+	if (this->readIdx == string::npos)
+		return false;
+	return story.find("<tw-passagedata", readIdx) != string::npos;
 }
 
-PassageToken StoryTokenizer::nextPassage()
-{
-    header= "</tw-passagedata>";
-    int endofpassage = Story.find(header);
-    
-    tempPassage = Story.substr(0, endofpassage);
-    
-    string tempStory = Story.substr(endofpassage+16);
-    Story = tempStory;
-    PassageToken Passage(tempPassage);
-
-    return Passage;
-}
-
-PassageToken::PassageToken(string tempPassage)
-{
-   int Ind_StartPassage = tempPassage.find("\">");
-   int Index_Name = tempPassage.find("name");
-   int Index_endofName = tempPassage.find("tags=");
-   name = tempPassage.substr(Index_Name+6, Index_endofName - Index_Name-8);
-   text = tempPassage.substr(Ind_StartPassage+2);
-}
-
-PassageToken::PassageToken()
-{
-    name = '\0';
-    text = '\0';
+PassageToken StoryTokenizer::nextPassage() {
+	size_t idx = story.find(START, readIdx);
+	size_t nameIdx = story.find(NAME, idx) + NAME.size();
+	size_t nameEnd = story.find("\"", nameIdx);
+	string name = story.substr(nameIdx, nameEnd - nameIdx);
+	size_t tagEnd = story.find(">", nameEnd) + 1;
+	size_t closeTag = story.find(END, nameEnd);
+	string text = story.substr(tagEnd, closeTag - tagEnd);
+	this->readIdx = closeTag;
+	return *new PassageToken(name, text);
 }

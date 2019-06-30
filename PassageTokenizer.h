@@ -1,31 +1,21 @@
-#ifndef __PASSAGETOKENIZER_H
-#define __PASSAGETOKENIZER_H
+#ifndef SRC_PASSAGETOKENIZER_H_
+#define SRC_PASSAGETOKENIZER_H_
+
 #include <string>
+#include "PartToken.h"
+
 using namespace std;
 
-enum type_t {LINK, SET, GOTO, IF, ELSEIF, ELSE, BLOCK, TEXT};
-class PartToken;
-
-class PassageTokenizer
-{
+class PassageTokenizer {
 private:
-    string Part, Passage;
+	string data;
+	size_t readIdx = 0;
+	bool ready = true;
 public:
-    PassageTokenizer(string);
-    PartToken nextPart();
-    bool hasNextPart();
-}; 
-
-class PartToken
-{
-private:
-    type_t TokenType;
-    string text;
-
-public:
-    PartToken(string);
-    string getText() const {return text;}
-    type_t getType() const {return TokenType;}
+	PassageTokenizer(string);
+	bool hasNextPart();
+	PartToken nextPart();
+	void walkData(int*);
 };
 
-#endif
+#endif /* SRC_PASSAGETOKENIZER_H_ */

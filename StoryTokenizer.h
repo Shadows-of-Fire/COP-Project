@@ -1,37 +1,22 @@
-#ifndef ___STORYTOKENIZER_H
-#define ___STORYTOKENIZER_H 
-#include "PassageTokenizer.h"
+#ifndef SRC_STORYTOKENIZER_H_
+#define SRC_STORYTOKENIZER_H_
 
+#include <cstddef>
 #include <string>
+#include "PassageToken.h"
+#include "PassageTokenizer.h"
+#include "PartToken.h"
+
 using namespace std;
 
-class PassageToken
-{
-public:
-    PassageToken(string);
-    PassageToken();
-    
-    string getName() const {return name; }
-    string getText() const {return text; }
-
+class StoryTokenizer {
 private:
-    string name;
-    string text; 
-};
-
-
-class StoryTokenizer
-{
+	string story;
+	size_t readIdx = 0;
 public:
-    StoryTokenizer(string);
-    bool hasNextPassage();
-    PassageToken nextPassage();
-    
-private: 
-    string Story;
-    string header;
-    string tempPassage;
-}; 
-
+	StoryTokenizer(string);
+	bool hasNextPassage();
+	PassageToken nextPassage();
+};
 
 #endif

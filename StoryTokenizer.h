@@ -16,7 +16,7 @@ private:
 public:
 	StoryTokenizer(string);
 	bool hasNextPassage();
-	PassageToken nextPassage();
+	PassageToken* nextPassage();
 };
 
 #endif

@@ -17,7 +17,7 @@ bool StoryTokenizer::hasNextPassage() {
 	return story.find("<tw-passagedata", readIdx) != string::npos;
 }
 
-PassageToken StoryTokenizer::nextPassage() {
+PassageToken* StoryTokenizer::nextPassage() {
 	size_t idx = story.find(START, readIdx);
 	size_t nameIdx = story.find(NAME, idx) + NAME.size();
 	size_t nameEnd = story.find("\"", nameIdx);

@@ -2,12 +2,9 @@
 #define SRC_PARTTOKEN_H_
 
 #include <string>
+#include "Part.h"
 
 using namespace std;
-
-enum part_t {
-	LINK, SET, GOTO, IF, ELSEIF, ELSE, BLOCK, TEXT
-};
 
 class PartToken {
 private:
@@ -17,6 +14,7 @@ public:
 	PartToken(string, part_t);
 	part_t getType() { return type; }
 	string getText() { return data; }
+	Part* asPart();
 };
 
 #endif /* SRC_PARTTOKEN_H_ */

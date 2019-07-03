@@ -11,11 +11,11 @@ private:
 	string data;
 	size_t readIdx = 0;
 	bool ready = true;
+	void walkData(int*);
 public:
 	PassageTokenizer(string);
 	bool hasNextPart();
 	PartToken nextPart();
-	void walkData(int*);
 };
 
 #endif /* SRC_PASSAGETOKENIZER_H_ */

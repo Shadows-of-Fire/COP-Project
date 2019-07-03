@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
+#include <vector>
 
 #include "PartToken.h"
 #include "PassageToken.h"
@@ -26,12 +27,10 @@ IFInterpreter::IFInterpreter(string file) {
 			PassageToken* psg = tok.nextPassage();
 			PassageTokenizer psgTok(psg->getText());
 			Passage* passage = new Passage(psg->getName());
-			if (this->curPassage == nullptr) {
-				this->curPassage = passage;
-			}
 			while (psgTok.hasNextPart()) {
 				passage->addPart(psgTok.nextPart().asPart());
 			}
+			this->psgOrder.push_back(passage->getName());
 			this->passages.emplace(passage->getName(), passage);
 		}
 		stream.close();
@@ -39,7 +38,9 @@ IFInterpreter::IFInterpreter(string file) {
 }
 
 void IFInterpreter::print() {
-
+	for (string& s : psgOrder) {
+		passages.at(s)->print();
+	}
 }
 
 void IFInterpreter::printDebug() {
@@ -48,4 +49,5 @@ void IFInterpreter::printDebug() {
 
 void IFInterpreter::play() {
 	//TODO: Project Part 5
+	//passages.at(psgOrder[0])->play();
 }

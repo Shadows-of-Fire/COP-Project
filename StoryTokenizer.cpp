@@ -26,5 +26,5 @@ PassageToken* StoryTokenizer::nextPassage() {
 	size_t closeTag = story.find(END, nameEnd);
 	string text = story.substr(tagEnd, closeTag - tagEnd);
 	this->readIdx = closeTag;
-	return *new PassageToken(name, text);
+	return new PassageToken(name, text);
 }

@@ -12,7 +12,7 @@ class IFInterpreter {
 private:
 	unordered_map<string, bool> vars;
 	unordered_map<string, Passage*> passages;
-	Passage* curPassage;
+	vector<string> psgOrder;
 public:
 	IFInterpreter(string);
 	void print();

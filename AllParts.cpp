@@ -1,155 +1,120 @@
 #include "AllParts.h"
+
+#include <stddef.h>
 #include <iostream>
 
-
-TextPart::TextPart(string C) : Part(TEXT)
-{
-    Text = C;
+TextPart::TextPart(string text) :
+		Part(TEXT) {
+	this->text = text;
 }
 
-void TextPart::print() const
-{
- cout << "\"" << Text << "\"" << endl;   
+void TextPart::print() const {
+	cout << '"' << text << '"' << endl;
 }
 
-void TextPart::play() 
-{
-    //todo.
+void TextPart::play() {
+	//TODO: Project Part 5
 }
 
-
-
-
-LinkPart::LinkPart(string dis, string trgt) :Part(LINK)
-{
-    display = dis;
-    target = trgt;
+LinkPart::LinkPart(string display, string target) :
+		Part(LINK) {
+	this->display = display;
+	this->target = target;
 }
 
-void LinkPart::print() const
-{
-    cout << "Link: \t display= " << display << ", target: " << target << endl;
+void LinkPart::print() const {
+	cout << "Link:  display=" << display << ", target=" << target << endl;
 }
 
-void LinkPart::play() 
-{
-    //todo.
+void LinkPart::play() {
+	//TODO: Project Part 5
 }
 
-
-
-
-GotoPart::GotoPart(string trgt) : Part(GOTO)
-{
-    target = target;
+GotoPart::GotoPart(string target) :
+		Part(GOTO) {
+	this->target = target;
 }
 
-void GotoPart::print() const
-{
-    cout << "go-to: \t target= " << target << endl;
+void GotoPart::print() const {
+	cout << "Go-to:  target=" << target << endl;
 }
 
-void GotoPart::play() 
-{
-    //todo.
+void GotoPart::play() {
+	//TODO: Project Part 5
 }
 
-
-
-
-SetPart::SetPart(string variable, bool Val) : IfPart(variable, Val)
-{
-    type = SET;
+IfPart::IfPart(string variable, bool value, part_t type) :
+		Part(type) {
+	this->variable = variable;
+	this->value = value;
 }
 
-void SetPart::print() const
-{
-    cout << "Set: \t var= " << var << ", value= " << value << endl;
-
+IfPart::IfPart(string variable, bool value) :
+		Part(IF) {
+	this->variable = variable;
+	this->value = value;
 }
 
-void SetPart::play() 
-{
-    //todo.
+void IfPart::print() const {
+	cout << "If:  var=" << variable << ", value=" << value << endl;
 }
 
-
-
-
-IfPart::IfPart(string Variable, bool Val) : Part(IF)
-{
-    var = Variable;
-    value = Val;
+void IfPart::play() {
+	//TODO: Project Part 5
 }
 
-void IfPart::print() const
-{
-    cout << "If: \t Var= " << var << ", Value= " << value << endl;
+SetPart::SetPart(string variable, bool value) :
+		IfPart(variable, value, SET) {
 }
 
-void IfPart::play() 
-{
-    //todo.
+void SetPart::print() const {
+	cout << "Set:  var=" << variable << ", value=" << value << endl;
 }
 
-
-
-
-ElseifPart::ElseifPart(string Variable, bool Val) : IfPart(Variable, Val)
-{
-    type = ELSEIF;
+void SetPart::play() {
+	//TODO: Project Part 5
 }
 
-void ElseifPart::print() const
-{
-    cout << "Else-if: \t Var= " << var << ", value= " << value << endl;
+ElseIfPart::ElseIfPart(string variable, bool value) :
+		IfPart(variable, value, ELSEIF) {
 }
 
-//void ElseifPart::play() 
-//{
-    //todo.
-//}
+void ElseIfPart::print() const {
+	cout << "Else-if:  var=" << variable << ", value= " << value << endl;
+}
 
+void ElseIfPart::play() {
+	//TODO: Project Part 5
+}
 
+ElsePart::ElsePart() :
+		Part(ELSE) {
+}
 
-ElsePart::ElsePart(type_t C) : Part(C)
-{
+void ElsePart::print() const {
+	cout << "Else" << endl;
+}
+
+void ElsePart::play() {
+	//TODO: Project Part 5
+}
+
+BlockPart::BlockPart() :
+		Part(BLOCK) {
 
 }
 
-void ElsePart::print() const
-{
-    cout << "ELSE" << endl;
+void BlockPart::addPart(Part* part) {
+	parts.push_back(part);
 }
 
-//void ElsePart::play() 
-//{
-    //todo.
-//}
-
-
-
-
-BlockPart::BlockPart() : Part(BLOCK)
-{
-
+void BlockPart::print() const {
+	cout << "START BLOCK" << endl;
+	for (size_t i = 0; i < parts.size(); i++)
+		cout << parts[i] << endl;
+	cout << "END BLOCK" << endl;
 }
 
-void BlockPart::addPart(Part& part)
-{
-    Part* C= &part;
-    parts.push_back(C);
-}
-
-void BlockPart::print() const
-{
-    cout << "START BLOCK" << endl;
-    for (int i=0; i < parts.size(); i++)
-        cout << parts[i] << endl;
-    cout << "END BLOCK" << endl;
-}
-
-void BlockPart::play() 
-{
-    //todo.
+void BlockPart::play() {
+	//TODO: Project Part 5
 }

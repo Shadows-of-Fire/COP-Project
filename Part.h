@@ -12,8 +12,7 @@ protected:
 	part_t type;
 public:
 	Part(part_t);
-	virtual void print() = 0;
-	virtual void printDebug() = 0;
+	virtual void print() const = 0;
 	virtual void play() = 0;
 	virtual ~Part();
 };

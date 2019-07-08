@@ -17,10 +17,6 @@ void Passage::print() {
 	}
 }
 
-void Passage::printDebug() {
-
-}
-
 void Passage::play() {
 	//TODO: Project part 5
 }

@@ -16,7 +16,6 @@ private:
 public:
 	IFInterpreter(string);
 	void print();
-	void printDebug();
 	void play();
 };
 

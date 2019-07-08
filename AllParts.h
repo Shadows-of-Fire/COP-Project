@@ -1,99 +1,79 @@
 #ifndef __AllPARTS_H
 #define __ALLPARTS_H
+
 #include "Part.h"
 #include <vector>
+#include <string>
 
-class TextPart: public Part
-{
+class TextPart: public Part {
 private:
-    string Text;
+	string text;
 public:
-    TextPart(string);
-    virtual void print() const override;
-    virtual void play() override;
+	TextPart(string);
+	virtual void print() const override;
+	virtual void play() override;
 };
 
-
-
-class LinkPart : public Part
-{
+class LinkPart: public Part {
 private:
-    string display;
-    string target;
+	string display;
+	string target;
 public:
-    LinkPart(string, string);
-    virtual void print() const override;
-    virtual void play() override;
+	LinkPart(string, string);
+	virtual void print() const override;
+	virtual void play() override;
 };
 
-
-
-class GotoPart : public Part
-{
-private:    
-    string target;
+class GotoPart: public Part {
+private:
+	string target;
 public:
-    GotoPart(string);
-    virtual void print() const override;
-    virtual void play() override;
+	GotoPart(string);
+	virtual void print() const override;
+	virtual void play() override;
 };
 
-
-
-class SetPart : public IfPart
-{
-public:
-    SetPart(string, bool);
-    virtual void print() const override;
-    virtual void play() override;
-};
-
-
-
-class IfPart : public Part
-{
+class IfPart: public Part {
 protected:
-    string var;
-    bool value;
-public: 
-    IfPart(string, bool);
-    virtual void print() const override;
-    virtual void play() override;
-
-};
-
-
-
-class ElseifPart : public IfPart
-{
+	string variable;
+	bool value;
 public:
-    ElseifPart(string, bool);
-    virtual void print() const override;
-   // virtual void play() override;
+	IfPart(string, bool, part_t);
+	IfPart(string, bool);
+	virtual void print() const override;
+	virtual void play() override;
+
 };
 
-
-
-class ElsePart : public Part
-{
+class SetPart: public IfPart {
 public:
-    ElsePart(type_t);
-    virtual void print() const override;
-
+	SetPart(string, bool);
+	virtual void print() const override;
+	virtual void play() override;
 };
 
+class ElseIfPart: public IfPart {
+public:
+	ElseIfPart(string, bool);
+	virtual void print() const override;
+	virtual void play() override;
+};
 
+class ElsePart: public Part {
+public:
+	ElsePart();
+	virtual void print() const override;
+	virtual void play() override;
+};
 
-class BlockPart : public Part
-{
+class BlockPart: public Part {
 private:
-    vector<Part*> parts;
+	vector<Part*> parts;
 public:
-    BlockPart();
-    void addPart(Part&);
-    virtual void print() const override;
-    virtual void play() override;
+	BlockPart();
+	void addPart(Part*);
+	virtual void print() const override;
+	virtual void play() override;
 };
-
 
 #endif

@@ -43,10 +43,6 @@ void IFInterpreter::print() {
 	}
 }
 
-void IFInterpreter::printDebug() {
-	//Unknown if necessary.
-}
-
 void IFInterpreter::play() {
 	//TODO: Project Part 5
 	//passages.at(psgOrder[0])->play();

@@ -17,7 +17,6 @@ public:
 	void addPart(Part*);
 	string getName() { return name; }
 	void print();
-	void printDebug();
 	void play();
 };
 

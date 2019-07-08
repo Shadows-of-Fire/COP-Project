@@ -1,6 +1,7 @@
 #include "PartToken.h"
 
 #include <stddef.h>
+#include <iostream>
 
 #include "AllParts.h"
 #include "PassageTokenizer.h"
@@ -25,8 +26,8 @@ Part* PartToken::asPart() {
 	case SET: {
 		int start = data.find("$", 0);
 		int end = data.find(" ", start);
-		string val = data.substr(data.find(" to ", 0) + 5, 5);
-		return new SetPart(data.substr(start, end), val == "true");
+		string val = data.substr(data.find(" to ", 0) + 4, 4);
+		return new SetPart(data.substr(start, end - start), val == "true");
 	}
 	case GOTO: {
 		int start = data.find("&quot;", 0) + 6;
@@ -36,14 +37,14 @@ Part* PartToken::asPart() {
 	case IF: {
 		int start = data.find("$", 0);
 		int end = data.find(" ", start);
-		string val = data.substr(data.find(" is ", 0) + 5, 5);
-		return new IfPart(data.substr(start, end), val == "true");
+		string val = data.substr(data.find(" is ", 0) + 4, 4);
+		return new IfPart(data.substr(start, end - start), val == "true");
 	}
 	case ELSEIF: {
 		int start = data.find("$", 0);
 		int end = data.find(" ", start);
-		string val = data.substr(data.find(" is ", 0) + 5, 5);
-		return new ElseIfPart(data.substr(start, end), val == "true");
+		string val = data.substr(data.find(" is ", 0) + 4, 4);
+		return new ElseIfPart(data.substr(start, end - start), val == "true");
 	}
 	case ELSE:
 		return new ElsePart();

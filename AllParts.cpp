@@ -3,6 +3,10 @@
 #include <stddef.h>
 #include <iostream>
 
+static void pBool(bool b) {
+	cout << (b ? "true" : "false") << endl;
+}
+
 TextPart::TextPart(string text) :
 		Part(TEXT) {
 	this->text = text;
@@ -56,7 +60,8 @@ IfPart::IfPart(string variable, bool value) :
 }
 
 void IfPart::print() const {
-	cout << "If:  var=" << variable << ", value=" << value << endl;
+	cout << "If:  var=" << variable << ", value=";
+	pBool(value);
 }
 
 void IfPart::play() {
@@ -68,7 +73,8 @@ SetPart::SetPart(string variable, bool value) :
 }
 
 void SetPart::print() const {
-	cout << "Set:  var=" << variable << ", value=" << value << endl;
+	cout << "Set:  var=" << variable << ", value=";
+	pBool(value);
 }
 
 void SetPart::play() {
@@ -80,7 +86,8 @@ ElseIfPart::ElseIfPart(string variable, bool value) :
 }
 
 void ElseIfPart::print() const {
-	cout << "Else-if:  var=" << variable << ", value= " << value << endl;
+	cout << "Else-if:  var=" << variable << ", value= ";
+	pBool(value);
 }
 
 void ElseIfPart::play() {
@@ -101,7 +108,6 @@ void ElsePart::play() {
 
 BlockPart::BlockPart() :
 		Part(BLOCK) {
-
 }
 
 void BlockPart::addPart(Part* part) {
@@ -111,7 +117,7 @@ void BlockPart::addPart(Part* part) {
 void BlockPart::print() const {
 	cout << "START BLOCK" << endl;
 	for (size_t i = 0; i < parts.size(); i++)
-		cout << parts[i] << endl;
+		parts.at(i)->print();
 	cout << "END BLOCK" << endl;
 }
 

@@ -32,7 +32,7 @@ Part* PartToken::asPart() {
 	case GOTO: {
 		int start = data.find("&quot;", 0) + 6;
 		int end = data.find("&quot;", start);
-		return new GotoPart(data.substr(start, end));
+		return new GotoPart(data.substr(start, end - start));
 	}
 	case IF: {
 		int start = data.find("$", 0);
@@ -56,8 +56,7 @@ Part* PartToken::asPart() {
 		}
 		return part;
 	}
-	case TEXT:
+	default:
 		return new TextPart(data);
 	}
-	return nullptr;
 }

@@ -40,7 +40,7 @@ GotoPart::GotoPart(string target) :
 }
 
 void GotoPart::print() const {
-	cout << "Go-to:  target=" << target << endl;
+	cout << "Goto:  target=" << target << endl;
 }
 
 void GotoPart::play() {

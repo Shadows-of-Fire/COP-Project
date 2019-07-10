@@ -12,8 +12,12 @@ private:
 	part_t type;
 public:
 	PartToken(string, part_t);
-	part_t getType() { return type; }
-	string getText() { return data; }
+	part_t getType() {
+		return type;
+	}
+	string getText() {
+		return data;
+	}
 	Part* asPart();
 };
 

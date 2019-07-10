@@ -15,7 +15,9 @@ private:
 public:
 	Passage(string);
 	void addPart(Part*);
-	string getName() { return name; }
+	string getName() {
+		return name;
+	}
 	void print();
 	void play();
 };

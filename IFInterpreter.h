@@ -19,6 +19,4 @@ public:
 	void play();
 };
 
-
-
 #endif /* SRC_IFINTERPRETER_H_ */

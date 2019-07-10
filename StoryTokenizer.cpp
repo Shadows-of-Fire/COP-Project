@@ -14,7 +14,7 @@ StoryTokenizer::StoryTokenizer(string story) {
 bool StoryTokenizer::hasNextPassage() {
 	if (this->readIdx == string::npos)
 		return false;
-	return story.find("<tw-passagedata", readIdx) != string::npos;
+	return story.find(START, readIdx) != string::npos;
 }
 
 PassageToken* StoryTokenizer::nextPassage() {

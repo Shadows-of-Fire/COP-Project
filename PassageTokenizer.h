@@ -9,7 +9,7 @@ using namespace std;
 class PassageTokenizer {
 private:
 	string data;
-	size_t readIdx = 0;
+	string::size_type readIdx = 0;
 	bool ready = true;
 	void walkData(int*);
 public:

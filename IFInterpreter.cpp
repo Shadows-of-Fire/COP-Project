@@ -22,6 +22,7 @@ IFInterpreter::IFInterpreter(string file) {
 			story += line + '\n';
 			getline(stream, line);
 		}
+		stream.close();
 		StoryTokenizer tok(story);
 		while (tok.hasNextPassage()) {
 			PassageToken* psg = tok.nextPassage();
@@ -33,7 +34,6 @@ IFInterpreter::IFInterpreter(string file) {
 			this->psgOrder.push_back(passage->getName());
 			this->passages.emplace(passage->getName(), passage);
 		}
-		stream.close();
 	}
 }
 

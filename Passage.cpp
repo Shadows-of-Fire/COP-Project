@@ -12,7 +12,7 @@ void Passage::addPart(Part* part) {
 
 void Passage::print() {
 	cout << "Passage " << name << ':' << endl;
-	for(Part* p : parts){
+	for (Part* p : parts) {
 		p->print();
 	}
 }

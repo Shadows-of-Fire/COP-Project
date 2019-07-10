@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+#include "Part.h"
+
 using namespace std;
 
 PassageTokenizer::PassageTokenizer(string data) {
@@ -15,12 +17,28 @@ bool PassageTokenizer::hasNextPart() {
 PartToken PassageTokenizer::nextPart() {
 	int read[] = { -1, -1 };
 	walkData(read);
-	PartToken token(data.substr(readIdx, 1 + read[0] - readIdx),
-			(part_t) read[1]);
-	readIdx = read[0] + 1;
-	if (readIdx >= data.size())
+	PartToken* token = new PartToken(
+			data.substr(readIdx, 1 + read[0] - readIdx), (part_t) read[1]);
+	readIdx = (read[0] + 1);
+	if (token->getText().empty() || readIdx >= data.size())
 		ready = false;
-	return token;
+	return *token;
+}
+
+bool isCmdStarter(string::size_type idx, string& str) {
+	if (str.at(idx) == '(') {
+		if (strcmp(str.substr(idx + 1, 5).c_str(), "go-to") == 0)
+			return true;
+		else if (strcmp(str.substr(idx + 1, 3).c_str(), "set") == 0)
+			return true;
+		else if (strcmp(str.substr(idx + 1, 2).c_str(), "if") == 0)
+			return true;
+		else if (strcmp(str.substr(idx + 1, 7).c_str(), "else-if") == 0)
+			return true;
+		else if (strcmp(str.substr(idx + 1, 4).c_str(), "else") == 0)
+			return true;
+	}
+	return false;
 }
 
 /**
@@ -28,20 +46,21 @@ PartToken PassageTokenizer::nextPart() {
  * This method does not increment the readIdx of the tokenizer.
  */
 void PassageTokenizer::walkData(int* ret) {
-	char c = data[readIdx];
+	char c = data.at(readIdx);
 	if (c == '[') {
-		if (data[readIdx + 1] == '[') {
+		if (readIdx + 1 < data.size() && data.at(readIdx + 1) == '['
+				&& data.at(readIdx + 2) != '[') {
 			ret[0] = data.find("]]", readIdx) + 1;
 			ret[1] = LINK;
 			return;
 		} else {
 			ret[1] = BLOCK;
 			int brackets = 0;
-			for (size_t i = readIdx + 1; i < data.size(); i++) {
-				if (data[i] == '[') {
+			for (string::size_type i = readIdx + 1; i < data.size(); i++) {
+				if (data.at(i) == '[') {
 					brackets++;
 				}
-				if (data[i] == ']') {
+				if (data.at(i) == ']') {
 					if (brackets == 0) {
 						ret[0] = i;
 						break;
@@ -53,8 +72,9 @@ void PassageTokenizer::walkData(int* ret) {
 		}
 	}
 	if (c == '(') {
-		int colon = data.find(':', readIdx);
+		string::size_type colon = data.find(':', readIdx);
 		const char* cmd = data.substr(readIdx + 1, colon - readIdx - 1).c_str();
+		bool fail = false;
 		if (strcmp(cmd, "go-to") == 0)
 			ret[1] = GOTO;
 		else if (strcmp(cmd, "set") == 0)
@@ -65,15 +85,21 @@ void PassageTokenizer::walkData(int* ret) {
 			ret[1] = ELSEIF;
 		else if (strcmp(cmd, "else") == 0)
 			ret[1] = ELSE;
-		ret[0] = data.find(')', colon);
-		return;
-	} else {
-		ret[1] = TEXT;
-		for (size_t i = readIdx; i < data.size() + 1; i++) {
-			if (data[i] == '[' || data[i] == '(' || data[i] == '\0') {
-				ret[0] = i - 1;
-				break;
-			}
+		else
+			fail = true;
+		if (!fail) {
+			ret[0] = data.find(')', colon);
+			return;
 		}
 	}
+	ret[1] = TEXT;
+	for (string::size_type i = readIdx; i < data.size(); i++) {
+		if (data.at(i) == '[' || isCmdStarter(i, data) || i >= data.size()) {
+			ret[0] = i - 1;
+			if (i >= data.size())
+				ret[0] = data.size();
+			return;
+		}
+	}
+	ret[0] = data.size();
 }

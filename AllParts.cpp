@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <iostream>
 
+#include "Utility.h"
+
 static void pBool(bool b) {
 	cout << (b ? "true" : "false") << endl;
 }
@@ -16,8 +18,8 @@ void TextPart::print() const {
 	cout << '"' << text << '"' << endl;
 }
 
-void TextPart::play() {
-	//TODO: Project Part 5
+void TextPart::play(Passage* psg) {
+	cout << text;
 }
 
 LinkPart::LinkPart(string display, string target) :
@@ -30,8 +32,9 @@ void LinkPart::print() const {
 	cout << "Link:  display=" << display << ", target=" << target << endl;
 }
 
-void LinkPart::play() {
-	//TODO: Project Part 5
+void LinkPart::play(Passage* psg) {
+	cout << display;
+	Utility::addLink(psg, this);
 }
 
 GotoPart::GotoPart(string target) :
@@ -43,8 +46,8 @@ void GotoPart::print() const {
 	cout << "Goto:  target=" << target << endl;
 }
 
-void GotoPart::play() {
-	//TODO: Project Part 5
+void GotoPart::play(Passage* psg) {
+	Utility::setPassage(&target);
 }
 
 IfPart::IfPart(string variable, bool value, part_t type) :
@@ -54,9 +57,7 @@ IfPart::IfPart(string variable, bool value, part_t type) :
 }
 
 IfPart::IfPart(string variable, bool value) :
-		Part(IF) {
-	this->variable = variable;
-	this->value = value;
+		IfPart(variable, value, IF) {
 }
 
 void IfPart::print() const {
@@ -64,21 +65,8 @@ void IfPart::print() const {
 	pBool(value);
 }
 
-void IfPart::play() {
-	//TODO: Project Part 5
-}
-
-SetPart::SetPart(string variable, bool value) :
-		IfPart(variable, value, SET) {
-}
-
-void SetPart::print() const {
-	cout << "Set:  var=" << variable << ", value=";
-	pBool(value);
-}
-
-void SetPart::play() {
-	//TODO: Project Part 5
+bool IfPart::isTrue() {
+	return Utility::getVar(variable) == value;
 }
 
 ElseIfPart::ElseIfPart(string variable, bool value) :
@@ -90,20 +78,25 @@ void ElseIfPart::print() const {
 	pBool(value);
 }
 
-void ElseIfPart::play() {
-	//TODO: Project Part 5
-}
-
 ElsePart::ElsePart() :
-		Part(ELSE) {
+		IfPart("", false, ELSE) {
 }
 
 void ElsePart::print() const {
 	cout << "Else" << endl;
 }
 
-void ElsePart::play() {
-	//TODO: Project Part 5
+SetPart::SetPart(string variable, bool value) :
+		IfPart(variable, value, SET) {
+}
+
+void SetPart::print() const {
+	cout << "Set:  var=" << variable << ", value=";
+	pBool(value);
+}
+
+void SetPart::play(Passage* psg) {
+	Utility::setVar(variable, value);
 }
 
 BlockPart::BlockPart() :
@@ -121,6 +114,25 @@ void BlockPart::print() const {
 	cout << "END BLOCK" << endl;
 }
 
-void BlockPart::play() {
-	//TODO: Project Part 5
+void BlockPart::play(Passage* psg) {
+	Part::makeIfControllers(parts, playParts);
+	for (Part* p : playParts) {
+		p->play(psg);
+		if (p->getType() == GOTO)
+			return;
+	}
+}
+
+IfControllerPart::IfControllerPart(vector<pair<IfPart*, BlockPart*>> parts) :
+		Part(IF) {
+	this->parts = parts;
+}
+
+void IfControllerPart::play(Passage* psg) {
+	for (pair<IfPart*, BlockPart*>& part : parts) {
+		if (part.first->isTrue()) {
+			part.second->play(psg);
+			return;
+		}
+	}
 }

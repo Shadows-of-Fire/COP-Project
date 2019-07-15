@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "IFInterpreter.h"
+#include "Part.h"
+
 Passage::Passage(string name) {
 	this->name = name;
 }
@@ -18,5 +21,30 @@ void Passage::print() {
 }
 
 void Passage::play() {
-	//TODO: Project part 5
+	Part::makeIfControllers(parts, playParts);
+	for (Part* p : playParts) {
+		p->play(this);
+		if (p->getType() == GOTO)
+			return;
+	}
+	if (!links.empty()) {
+		cout << "Select a link from the list." << endl;
+		for (unsigned int i = 0; i < links.size(); i++) {
+			cout << i + 1 << ". " << links.at(i)->getDisplay() << endl;
+		}
+		unsigned int link;
+		cin >> link;
+		while (cin.fail() || link > links.size() || link < 1) {
+			cin.ignore(10000, '\n');
+			cin.clear();
+			cin >> link;
+		}
+		IFInterpreter::instance->setPassage(links.at(link - 1)->getTarget());
+	} else {
+		IFInterpreter::instance->setPassage(nullptr);
+	}
+}
+
+void Passage::addLink(LinkPart* part) {
+	this->links.push_back(part);
 }

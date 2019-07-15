@@ -10,6 +10,8 @@
 #include "PassageTokenizer.h"
 #include "StoryTokenizer.h"
 
+IFInterpreter* IFInterpreter::instance = nullptr;
+
 IFInterpreter::IFInterpreter(string file) {
 	ifstream stream(file);
 	if (!stream.is_open()) {
@@ -35,6 +37,7 @@ IFInterpreter::IFInterpreter(string file) {
 			this->passages.emplace(passage->getName(), passage);
 		}
 	}
+	instance = this;
 }
 
 void IFInterpreter::print() {
@@ -44,6 +47,23 @@ void IFInterpreter::print() {
 }
 
 void IFInterpreter::play() {
-	//TODO: Project Part 5
-	//passages.at(psgOrder[0])->play();
+	active = passages.at(psgOrder.at(0));
+	while (active != nullptr) {
+		active->play();
+	}
+}
+
+void IFInterpreter::setPassage(string* psg) {
+	if (psg == nullptr)
+		active = nullptr;
+	else
+		active = passages.at(*psg);
+}
+
+void IFInterpreter::setVar(string var, bool val){
+	this->vars.emplace(var,val);
+}
+
+bool IFInterpreter::getVar(string var){
+	return this->vars.at(var);
 }

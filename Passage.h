@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Part.h"
+#include "AllParts.h"
 
 using namespace std;
 
@@ -12,6 +12,9 @@ class Passage {
 private:
 	string name;
 	vector<Part*> parts;
+	vector<Part*> playParts;
+	vector<LinkPart*> links;
+	bool cont = true;
 public:
 	Passage(string);
 	void addPart(Part*);
@@ -20,6 +23,10 @@ public:
 	}
 	void print();
 	void play();
+	void stop() {
+		cont = false;
+	}
+	void addLink(LinkPart*);
 };
 
 #endif /* SRC_PASSAGE_H_ */

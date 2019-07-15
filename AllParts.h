@@ -11,7 +11,7 @@ private:
 public:
 	TextPart(string);
 	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override;
 };
 
 class LinkPart: public Part {
@@ -21,7 +21,13 @@ private:
 public:
 	LinkPart(string, string);
 	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override;
+	string getDisplay() {
+		return display;
+	}
+	string* getTarget(){
+		return &target;
+	}
 };
 
 class GotoPart: public Part {
@@ -30,7 +36,7 @@ private:
 public:
 	GotoPart(string);
 	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override;
 };
 
 class IfPart: public Part {
@@ -41,39 +47,50 @@ public:
 	IfPart(string, bool, part_t);
 	IfPart(string, bool);
 	virtual void print() const override;
-	virtual void play() override;
-
-};
-
-class SetPart: public IfPart {
-public:
-	SetPart(string, bool);
-	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override {};
+	virtual bool isTrue();
 };
 
 class ElseIfPart: public IfPart {
 public:
 	ElseIfPart(string, bool);
 	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override {};
 };
 
-class ElsePart: public Part {
+class ElsePart: public IfPart {
 public:
 	ElsePart();
 	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override {};
+	virtual bool isTrue() override { return true; }
+};
+
+class SetPart: public IfPart {
+public:
+	SetPart(string, bool);
+	virtual void print() const override;
+	virtual void play(Passage*) override;
 };
 
 class BlockPart: public Part {
 private:
 	vector<Part*> parts;
+	vector<Part*> playParts;
 public:
 	BlockPart();
 	void addPart(Part*);
 	virtual void print() const override;
-	virtual void play() override;
+	virtual void play(Passage*) override;
+};
+
+class IfControllerPart: public Part {
+protected:
+	vector<pair<IfPart*, BlockPart*>> parts;
+public:
+	IfControllerPart(vector<pair<IfPart*, BlockPart*>>);
+	virtual void print() const override {};
+	virtual void play(Passage*) override;
 };
 
 #endif

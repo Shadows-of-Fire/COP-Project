@@ -8,7 +8,7 @@ const string FILENAME = "if.html";
 int main()
 {
   IFInterpreter* interpreter = new IFInterpreter(FILENAME);
-  interpreter->print();
+  interpreter->play();
 
   delete interpreter;
   return 0;

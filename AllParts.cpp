@@ -32,6 +32,7 @@ void LinkPart::print() const {
 
 void LinkPart::play() {
 	//TODO: Project Part 5
+	Passages.at(target)->play;
 }
 
 GotoPart::GotoPart(string target) :
@@ -45,6 +46,7 @@ void GotoPart::print() const {
 
 void GotoPart::play() {
 	//TODO: Project Part 5
+	passages.at(target)->play;
 }
 
 IfPart::IfPart(string variable, bool value, part_t type) :
@@ -66,6 +68,7 @@ void IfPart::print() const {
 
 void IfPart::play() {
 	//TODO: Project Part 5
+	
 }
 
 SetPart::SetPart(string variable, bool value) :
@@ -79,6 +82,7 @@ void SetPart::print() const {
 
 void SetPart::play() {
 	//TODO: Project Part 5
+	var.at(variable) = value;
 }
 
 ElseIfPart::ElseIfPart(string variable, bool value) :

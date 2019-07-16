@@ -55,9 +55,6 @@ bool isCmdStarter(string::size_type idx, string& str) {
  */
 void PassageTokenizer::walkData(int* ret) {
 	char c = data.at(readIdx);
-	while (c == '\n' || c == '\r' || c == ' ') {
-		c = data.at(++readIdx);
-	}
 	if (c == '[') {
 		if (readIdx + 2 < data.size() && data.at(readIdx + 1) == '['
 				&& data.at(readIdx + 2) != '[') {

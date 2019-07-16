@@ -11,8 +11,7 @@ Part::Part(part_t type) {
 Part::~Part() {
 }
 
-void Part::makeIfControllers(vector<Part*>& parts,
-		vector<Part*>& playParts) {
+void Part::makeIfControllers(vector<Part*>& parts, vector<Part*>& playParts) {
 	for (unsigned int i = 0; i < parts.size(); i++) {
 		Part* p = parts.at(i);
 		if (p->getType() == IF) {
@@ -20,11 +19,14 @@ void Part::makeIfControllers(vector<Part*>& parts,
 			IfPart* _if = (IfPart*) p;
 			BlockPart* ifChild = (BlockPart*) parts.at(++i);
 			ctrl.push_back(*new pair<IfPart*, BlockPart*>(_if, ifChild));
+			if (i + 1 == parts.size())
+				break;
 			Part* next = parts.at(i + 1);
 			while (next->getType() == ELSEIF || next->getType() == ELSE) {
 				BlockPart* child = (BlockPart*) parts.at(i + 2);
 				i += 2;
-				ctrl.push_back(*new pair<IfPart*, BlockPart*>((IfPart*) next, child));
+				ctrl.push_back(
+						*new pair<IfPart*, BlockPart*>((IfPart*) next, child));
 				if (i + 1 == parts.size())
 					break;
 				next = parts.at(i + 1);

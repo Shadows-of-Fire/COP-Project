@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <iostream>
+#include <utility>
 
 #include "Utility.h"
 
@@ -33,7 +34,7 @@ void LinkPart::print() const {
 }
 
 void LinkPart::play(Passage* psg) {
-	cout << display;
+	//cout << display;
 	Utility::addLink(psg, this);
 }
 
@@ -115,7 +116,8 @@ void BlockPart::print() const {
 }
 
 void BlockPart::play(Passage* psg) {
-	Part::makeIfControllers(parts, playParts);
+	if (playParts.empty())
+		Part::makeIfControllers(parts, playParts);
 	for (Part* p : playParts) {
 		p->play(psg);
 		if (p->getType() == GOTO)

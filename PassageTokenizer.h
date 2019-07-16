@@ -10,7 +10,6 @@ class PassageTokenizer {
 private:
 	string data;
 	string::size_type readIdx = 0;
-	bool ready = true;
 	void walkData(int*);
 public:
 	PassageTokenizer(string);

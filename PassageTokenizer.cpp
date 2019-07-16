@@ -1,6 +1,7 @@
 #include "PassageTokenizer.h"
 
 #include <cstring>
+#include <iostream>
 
 #include "Part.h"
 
@@ -11,7 +12,16 @@ PassageTokenizer::PassageTokenizer(string data) {
 }
 
 bool PassageTokenizer::hasNextPart() {
-	return ready;
+	unsigned int id = readIdx;
+	if (id >= data.size())
+		return false;
+	char c = data.at(id);
+	while (c == '\n' || c == '\r' || c == ' ') {
+		c = data.at(id++);
+		if (id >= data.size())
+			return false;
+	}
+	return true;
 }
 
 PartToken PassageTokenizer::nextPart() {
@@ -20,8 +30,6 @@ PartToken PassageTokenizer::nextPart() {
 	PartToken* token = new PartToken(
 			data.substr(readIdx, 1 + read[0] - readIdx), (part_t) read[1]);
 	readIdx = (read[0] + 1);
-	if (token->getText().empty() || readIdx >= data.size())
-		ready = false;
 	return *token;
 }
 
@@ -47,8 +55,11 @@ bool isCmdStarter(string::size_type idx, string& str) {
  */
 void PassageTokenizer::walkData(int* ret) {
 	char c = data.at(readIdx);
+	while (c == '\n' || c == '\r' || c == ' ') {
+		c = data.at(++readIdx);
+	}
 	if (c == '[') {
-		if (readIdx + 1 < data.size() && data.at(readIdx + 1) == '['
+		if (readIdx + 2 < data.size() && data.at(readIdx + 1) == '['
 				&& data.at(readIdx + 2) != '[') {
 			ret[0] = data.find("]]", readIdx) + 1;
 			ret[1] = LINK;
@@ -94,10 +105,8 @@ void PassageTokenizer::walkData(int* ret) {
 	}
 	ret[1] = TEXT;
 	for (string::size_type i = readIdx; i < data.size(); i++) {
-		if (data.at(i) == '[' || isCmdStarter(i, data) || i >= data.size()) {
+		if (data.at(i) == '[' || isCmdStarter(i, data)) {
 			ret[0] = i - 1;
-			if (i >= data.size())
-				ret[0] = data.size();
 			return;
 		}
 	}

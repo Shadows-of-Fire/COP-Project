@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <utility>
 #include <vector>
 
 #include "PartToken.h"
@@ -34,7 +33,7 @@ IFInterpreter::IFInterpreter(string file) {
 				passage->addPart(psgTok.nextPart().asPart());
 			}
 			this->psgOrder.push_back(passage->getName());
-			this->passages.emplace(passage->getName(), passage);
+			this->passages[passage->getName()] = passage;
 		}
 	}
 	instance = this;
@@ -56,14 +55,15 @@ void IFInterpreter::play() {
 void IFInterpreter::setPassage(string* psg) {
 	if (psg == nullptr)
 		active = nullptr;
-	else
+	else {
 		active = passages.at(*psg);
+	}
 }
 
-void IFInterpreter::setVar(string var, bool val){
-	this->vars.emplace(var,val);
+void IFInterpreter::setVar(string var, bool val) {
+	this->vars[var] = val;
 }
 
-bool IFInterpreter::getVar(string var){
+bool IFInterpreter::getVar(string var) {
 	return this->vars.at(var);
 }
